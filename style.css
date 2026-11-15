@@ -120,3 +120,6 @@ textarea.code { font-size: 1.05rem; }
   .handwrite { border-collapse: collapse; width: 100%; }
   .handwrite td { height: 22pt; }
 }
+
+/* 文字のリンクの色（暗い画面でも読める濃さに・2026-11-15） */
+a { color: var(--accent); }
