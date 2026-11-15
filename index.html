@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src data:; connect-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>鍵の預け番（試作）</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="screen">
+<header class="top">
+  <h1>鍵の預け番 <span class="tag">試作</span></h1>
+  <p class="subtitle">社長しか知らない「金庫の番号」「親パスワード」を、何人かに分けて預ける紙のカード</p>
+  <p class="lead">もしもの時のメモに鍵をかけ、その鍵を3枚（など）のカードに分けます。<strong>決めた枚数（たとえば2枚）がそろった時だけ</strong>メモが読めます。1枚だけでは何も分かりません。</p>
+  <p class="privacy" role="note"><strong>メモはこのパソコンの外に送られません。</strong>鍵をかける・分ける・開けるは、すべてこのブラウザの中だけで行います。このページには、インターネットへ送る仕組みを入れていません（送ることを禁じる設定もしています）。</p>
+</header>
+
+<nav class="tabs" aria-label="使い方を選ぶ">
+  <button type="button" class="tab" data-tab="make" aria-pressed="true">① 作る</button>
+  <button type="button" class="tab" data-tab="check" aria-pressed="false">② 点検する（1枚）</button>
+  <button type="button" class="tab" data-tab="open" aria-pressed="false">③ 開ける（もしもの時）</button>
+  <button type="button" class="tab" data-tab="log" aria-pressed="false">④ 記録を確かめる</button>
+</nav>
+
+<main>
+<!-- ① 作る -->
+<section id="tab-make" class="panel">
+  <div class="card">
+    <h2><span class="num">1</span>もしもの時のメモを書く</h2>
+    <p><label for="company">会社・お店の名前（カードに印刷します。空でもかまいません）</label><br>
+      <input type="text" id="company" class="wide" maxlength="60" autocomplete="off"></p>
+    <p><label for="memo">メモ（ここに書いた文が、カードがそろった時だけ読めます）</label></p>
+    <textarea id="memo" rows="8" class="wide" spellcheck="false" autocomplete="off"></textarea>
+    <p class="small" id="memo-count" aria-live="polite"></p>
+    <details class="hint">
+      <summary>何を書けばいいか・書かない方がいいもの</summary>
+      <ul>
+        <li><strong>書くとよいもの：</strong>パスワード管理アプリの「親パスワード」、金庫の番号、ホームページ（ドメイン）の管理会社とログインの場所、会社のメールの管理者の入り方、大事な書類の置き場所、連絡する人（顧問の先生・取引先）。</li>
+        <li><strong>短く書く：</strong>もしもの時、封筒の文字を打ち直すことがあります。長いほど大変です。細かいことは「置き場所」だけ書き、本体はパスワード管理アプリや金庫に置くのがおすすめです。</li>
+        <li><strong>銀行のネットバンキングのパスワード：</strong>銀行の決まり（規約）で、他の人に知らせる・管理を任せると補償の対象外になる例があります。書く前に取引銀行の規約を確かめてください。代わりに「取引銀行と支店、担当の方の連絡先、窓口での手続きが要ること」を書く方法があります。</li>
+        <li>このメモは法律上の遺言や、契約の書類にはなりません。</li>
+      </ul>
+    </details>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">2</span>何人に預けて、何人そろえば開けるか</h2>
+    <div class="row-opts">
+      <p><label for="n">預ける人数（カードの枚数）</label><br><select id="n"></select></p>
+      <p><label for="k">開けるのに要る人数</label><br><select id="k"></select></p>
+    </div>
+    <p class="small" id="nk-explain"></p>
+    <div id="holders" class="holders"></div>
+    <p class="small">預け先の呼び名はカードとファイルの記録に残ります（例：「妻」「専務」「顧問の先生」）。本名でなくてかまいません。</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">3</span>カードと封筒を作る</h2>
+    <div class="btns">
+      <button type="button" class="btn primary" id="make">カードと封筒を作る</button>
+      <button type="button" class="btn" id="sample">見本（架空のお店）を入れる</button>
+    </div>
+    <p id="make-msg" class="msg" role="status" aria-live="polite"></p>
+    <div id="made" hidden>
+      <div class="summary" id="made-summary"></div>
+      <div class="btns">
+        <button type="button" class="btn primary" id="print-btn">カードを印刷する</button>
+        <button type="button" class="btn" id="save">ファイル（封筒と記録）を保存する</button>
+        <button type="button" class="btn" id="clear">画面から消す</button>
+      </div>
+      <ol class="todo">
+        <li>カードを印刷し、<strong>1枚ずつ別の人に</strong>渡します（同じ人・同じ場所に2枚置かない）。</li>
+        <li>ファイルは持ち主の手元（USBメモリなど）にも保存します。封筒は各カードにも印刷されているので、ファイルを失くしても開けられます。</li>
+        <li>年に1回、預けた人に「② 点検する」でカードが読めるか確かめてもらうと安心です。</li>
+        <li>終わったら、このページを閉じてください（メモは画面にしか残っていません）。</li>
+      </ol>
+      <details class="hint"><summary>作ったカードを画面で見る</summary><div id="made-cards"></div></details>
+    </div>
+  </div>
+</section>
+
+<!-- ② 点検 -->
+<section id="tab-check" class="panel" hidden>
+  <div class="card">
+    <h2><span class="num">1</span>カード1枚を打ち込む</h2>
+    <p class="small">預かった人が、カードがちゃんと読めるかを確かめます。<strong>1枚では何も開きません</strong>（中身は分かりません）。</p>
+    <textarea id="check-code" rows="3" class="wide code" spellcheck="false" autocomplete="off" aria-label="カードの文字"></textarea>
+    <p class="small">ファイル（封筒と記録）があれば、どの預け先のカードかも分かります：
+      <label class="btn small-btn" for="check-file">ファイルを選ぶ</label><input type="file" id="check-file" class="visually-hidden" accept=".txt,text/plain">
+      <span id="check-file-name"></span></p>
+    <div class="btns"><button type="button" class="btn primary" id="check">確かめる</button></div>
+    <div id="check-result" class="msg" role="status" aria-live="polite"></div>
+    <div id="check-log" hidden>
+      <p><label for="check-who">点検した人</label><br><input type="text" id="check-who" maxlength="40" autocomplete="off"></p>
+      <button type="button" class="btn" id="check-save">点検したことを記録に足して保存する</button>
+    </div>
+  </div>
+</section>
+
+<!-- ③ 開ける -->
+<section id="tab-open" class="panel" hidden>
+  <div class="card">
+    <h2><span class="num">1</span>カードを打ち込む</h2>
+    <p class="small">そろったカードを1枚ずつ入れてください。小文字・全角でもかまいません。「O（オー）」は「0」、「I」「L」は「1」として読みます。</p>
+    <div id="open-codes"></div>
+    <button type="button" class="link" id="open-add">＋ 欄を増やす</button>
+  </div>
+  <div class="card">
+    <h2><span class="num">2</span>封筒の文字を入れる</h2>
+    <p class="small">カードの下に印刷した「封筒」の行（「01:」で始まる行）を全部入れるか、保存したファイルを選んでください。</p>
+    <p><label class="btn small-btn" for="open-file">ファイルを選ぶ</label><input type="file" id="open-file" class="visually-hidden" accept=".txt,text/plain"> <span id="open-file-name"></span></p>
+    <textarea id="open-env" rows="8" class="wide code" spellcheck="false" autocomplete="off" aria-label="封筒の文字"></textarea>
+    <div class="btns"><button type="button" class="btn primary" id="open">開ける</button></div>
+    <div id="open-msg" class="msg" role="status" aria-live="polite"></div>
+    <div id="opened" hidden>
+      <div class="memo-out" id="opened-memo"></div>
+      <p class="warn">開けたカードは、何人かの目に触れました。落ち着いたら、新しい組を作り直してください（古いカードは捨てる）。</p>
+      <div id="open-log" hidden>
+        <p><label for="open-who">開けた人</label><br><input type="text" id="open-who" maxlength="40" autocomplete="off"></p>
+        <button type="button" class="btn" id="open-save">開けたことを記録に足して保存する</button>
+      </div>
+      <button type="button" class="btn" id="open-clear">画面から消す</button>
+    </div>
+  </div>
+</section>
+
+<!-- ④ 記録 -->
+<section id="tab-log" class="panel" hidden>
+  <div class="card">
+    <h2><span class="num">1</span>ファイルを選ぶ</h2>
+    <p><label class="btn small-btn" for="log-file">ファイルを選ぶ</label><input type="file" id="log-file" class="visually-hidden" accept=".txt,text/plain"> <span id="log-file-name"></span></p>
+    <p><label for="log-anchor">カードに印刷した「記録の印」（あれば。例：76C3-CC45）</label><br><input type="text" id="log-anchor" maxlength="12" autocomplete="off"></p>
+    <div class="btns"><button type="button" class="btn primary" id="log-check">確かめる</button></div>
+    <div id="log-msg" class="msg" role="status" aria-live="polite"></div>
+    <div id="log-table"></div>
+    <p class="small">記録は1行ずつ前の行とつながっています。途中の行を書き換える・消すと分かります。ただし、ファイルを持つ人が全部を作り直すと、カードに印刷した最初の行より後ろは見分けられません。点検のたびに「最新の印」をカードの余白に手書きしておくと、そこまでは守れます。</p>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <p class="small">試作品です。仕組み：決めた枚数がそろうと元に戻せる分け方（Shamir の秘密分散）と、AES-GCM の鍵かけ（ブラウザの標準の暗号）を使っています。カードの文字は、書き違い・隣どうしの入れ替わりを必ず見つける検査つきです。</p>
+  <p class="small"><a href="terms.html">利用条件・個人情報の扱い</a>（<a href="terms-en.html" lang="en">English</a>）</p>
+</footer>
+</div>
+
+<!-- 印刷用（画面には出さない） -->
+<div id="print-area" class="print-only" aria-hidden="true"></div>
+
+<script src="engine.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

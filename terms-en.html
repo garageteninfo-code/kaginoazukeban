@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; img-src data:; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<title>Kagi-no-azukeban terms</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <p><a href="terms.html" lang="ja">日本語</a></p>
+  <h1>Terms of use and privacy</h1>
+  <p class="lead">鍵の預け番 Kagi-no-azukeban — Paper cards that split an emergency note among several trusted people (free prototype).</p>
+  <p>This English text is a translation. If this English version and the Japanese version differ, the Japanese version (<a href="terms.html">利用条件</a>) is the original. The tool's screens are in Japanese only.</p>
+</header>
+<main>
+  <section class="card">
+    <h2>1. What this tool does</h2>
+    <p>It encrypts the note you write and splits the key into several cards (Shamir's secret sharing and the browser's built-in AES-GCM encryption). The note can be read only when the chosen number of cards is brought together. Encrypting, splitting and opening happen only inside your web browser.</p>
+  </section>
+  <section class="card">
+    <h2>2. We do not collect or send your data</h2>
+    <ul>
+      <li>Your note, company or shop name, the names you give the card holders, the card codes, the envelope text and the log are not sent anywhere, including to the provider. The page contains no code that sends data over the internet, and its security settings (Content Security Policy) block network access.</li>
+      <li>The page does not store your note or cards in your browser (it does not write to localStorage or similar). They are gone when you close the page. Only when you press a "print" or "save" button does your browser send them to your printer or save a file to your computer.</li>
+      <li>The provider holds no copy of your note, cards or records. If cards or the envelope are lost, the provider cannot open the note for you.</li>
+      <li>This page is served from GitHub Pages (a free hosting service of GitHub, Inc.). GitHub may keep connection records (such as IP addresses) of people who open the page, for security purposes. Please see that company's privacy statement. The provider does not view or use those records.</li>
+    </ul>
+  </section>
+  <section class="card">
+    <h2>3. No guarantee</h2>
+    <ul>
+      <li>This tool has not been reviewed by a cryptography expert. It uses the browser's standard random numbers and encryption (Web Crypto).</li>
+      <li>Anyone who collects the chosen number of cards can read the note. The tool cannot protect the paper cards themselves. Give each card to a different person or place. If fewer than the chosen number of cards remain, nobody can read the note.</li>
+      <li>The printed layout has not been checked on a real printer and paper. After making the cards, always try opening them once.</li>
+      <li>The tamper-evident log cannot detect deletion of its last line, or a complete rewrite of everything after the "log mark" printed on the cards.</li>
+      <li>The tool is provided "as is", free of charge.</li>
+      <li>If the provider is liable for any damage you suffer from using, or being unable to use, this tool, the provider's total liability is limited to JPY 10,000.</li>
+      <li>This cap applies only to damage caused by the provider's ordinary (slight) negligence. It does not apply to damage caused by the provider's willful misconduct or gross negligence.</li>
+      <li>Nothing in these terms limits any rights you have under mandatory consumer-protection laws of your country or region.</li>
+      <li>Whether you may share passwords for online banking or other services is governed by that bank's or service's terms. Sharing them may void protection or compensation.</li>
+      <li>The note is not a legal will or a contract. The tool does not give legal advice.</li>
+    </ul>
+  </section>
+  <section class="card">
+    <h2>4. Provider</h2>
+    <p>HARVEST (Japan) / Contact: garageten.info@gmail.com (this address dates from our former name, GARAGE TEN)</p>
+    <p>This tool is free. Please do not include your note or card codes in emails to us.</p>
+  </section>
+  <section class="card">
+    <h2>5. Changes</h2>
+    <p>These terms may change. Changes will be shown on this page with a date. Last updated: November 15, 2026</p>
+  </section>
+  <p><a href="index.html">← Back to Kagi-no-azukeban</a></p>
+</main>
+</body>
+</html>
